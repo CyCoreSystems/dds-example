@@ -1,0 +1,79 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/golang/protobuf/proto",
+			"repository": "https://github.com/golang/protobuf",
+			"revision": "1f49d83d9aa00e6ce4fc8258c71cc7786aec968a",
+			"branch": "master",
+			"path": "/proto"
+		},
+		{
+			"importpath": "github.com/jmoiron/sqlx",
+			"repository": "https://github.com/jmoiron/sqlx",
+			"revision": "7396209bbeada6a4fcc28aa9408f89b2e71cac39",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/nats-io/gnatsd/auth",
+			"repository": "https://github.com/nats-io/gnatsd",
+			"revision": "e41d360e77711885108008ccb6735a5b7637dd8e",
+			"branch": "master",
+			"path": "/auth"
+		},
+		{
+			"importpath": "github.com/nats-io/gnatsd/conf",
+			"repository": "https://github.com/nats-io/gnatsd",
+			"revision": "e41d360e77711885108008ccb6735a5b7637dd8e",
+			"branch": "master",
+			"path": "/conf"
+		},
+		{
+			"importpath": "github.com/nats-io/gnatsd/server",
+			"repository": "https://github.com/nats-io/gnatsd",
+			"revision": "e41d360e77711885108008ccb6735a5b7637dd8e",
+			"branch": "master",
+			"path": "/server"
+		},
+		{
+			"importpath": "github.com/nats-io/gnatsd/test",
+			"repository": "https://github.com/nats-io/gnatsd",
+			"revision": "e41d360e77711885108008ccb6735a5b7637dd8e",
+			"branch": "master",
+			"path": "/test"
+		},
+		{
+			"importpath": "github.com/nats-io/nats",
+			"repository": "https://github.com/nats-io/nats",
+			"revision": "ea8b4fd12ebb823073c0004b9f09ac8748f4f165",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/nats-io/nuid",
+			"repository": "https://github.com/nats-io/nuid",
+			"revision": "a5152d67cf63cbfb5d992a395458722a45194715",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/crypto/bcrypt",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "f160b6bf95857cd862817875dd958be022e587c4",
+			"branch": "master",
+			"path": "/bcrypt"
+		},
+		{
+			"importpath": "golang.org/x/crypto/blowfish",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "f160b6bf95857cd862817875dd958be022e587c4",
+			"branch": "master",
+			"path": "/blowfish"
+		},
+		{
+			"importpath": "golang.org/x/net/context",
+			"repository": "https://go.googlesource.com/net",
+			"revision": "1358eff22f0dd0c54fc521042cc607f6ff4b531a",
+			"branch": "master",
+			"path": "/context"
+		}
+	]
+}
