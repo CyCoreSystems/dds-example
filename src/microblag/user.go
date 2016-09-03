@@ -1,6 +1,12 @@
 package microblag
 
-import "time"
+import (
+	"dds"
+	"time"
+)
+
+// UserFactory is a factory for distributed data model binding
+var UserFactory = dds.NewModel(func() interface{} { return &User{} })
 
 // A User is a user of a system
 type User struct {

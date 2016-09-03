@@ -16,7 +16,7 @@ func main() {
 		data: make(map[string]microblag.Entry),
 	}
 
-	if err := nats.Listen(ctx, storage, "entries"); err != nil {
+	if err := nats.Listen(ctx, microblag.EntryFactory, storage, "entries"); err != nil {
 		fmt.Printf("Err: %v\n", err)
 		return
 	}

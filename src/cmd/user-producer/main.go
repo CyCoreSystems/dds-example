@@ -1,53 +1,63 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"microblag"
 	"time"
 
-	"golang.org/x/net/context"
-
-	"github.com/nats-io/nats"
-	"github.com/satori/go.uuid"
+	dnats "dds/nats"
 )
 
 func main() {
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	var user microblag.User
 	user.Username = "X"
 	user.Created = time.Now()
 
-	var nc *nats.Conn
-	var err error
+	client := dnats.Client(microblag.UserFactory, "users")
+	defer client.Close()
 
-	for i := 0; i != 3 && nc == nil; i++ {
-		<-time.After(500 * time.Millisecond)
-		nc, err = nats.Connect(nats.DefaultURL)
-		if err != nil {
-			fmt.Printf("Error connecting to nats: '%v'\n", err)
-		}
+	id, err := client.Create(user)
+	if err != nil {
+		fmt.Printf("Error creating user: %s\n", err)
+		return
 	}
 
-	if nc == nil {
-		panic(errors.New("Failed to connect to nats, giving up\n"))
+	fmt.Printf("Got ID: %s\n", id)
+
+	var myUser *microblag.User
+	err = client.Get(id, &myUser)
+	if err != nil {
+		fmt.Printf("Error getting user: %s\n", err)
 	}
 
-	c, _ := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	fmt.Printf("user : %v\n", myUser)
 
-	replyID := uuid.NewV1().String()
+	var d = "hello-world"
+	myUser.DisplayName = &d
+	err = client.Update(id, myUser)
+	if err != nil {
+		fmt.Printf("Error updating user: %s\n", err)
 
-	c.Subscribe(replyID, func(v interface{}) {
-		fmt.Printf("got create response: %v\n", v)
-		cancel()
-	})
+	}
 
-	c.PublishRequest("users.create", replyID, &user)
+	fmt.Printf("user : %v\n", myUser)
 
-	<-ctx.Done()
+	err = client.Get(id, &myUser)
+	if err != nil {
+		fmt.Printf("Error getting user: %s\n", err)
+	}
 
-	fmt.Printf("err: %v\n", ctx.Err())
+	fmt.Printf("user : %v\n", myUser)
+
+	err = client.Delete(id)
+	if err != nil {
+		fmt.Printf("Error deleting user: %s\n", err)
+	}
+
+	err = client.Get(id, &myUser)
+	if err != nil {
+		fmt.Printf("Error getting user: %s\n", err)
+	}
+
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"microblag"
 	"reflect"
 	"sync"
@@ -29,6 +30,8 @@ func (s *userStorage) Get(id string) (interface{}, error) {
 func (s *userStorage) Create(i interface{}) (string, error) {
 	id := uuid.NewV1().String()
 
+	log.Printf("Creating: %s", id)
+
 	user, ok := i.(*microblag.User)
 	if !ok {
 		return "", errors.New("Unsupported type: " + reflect.TypeOf(i).String())
@@ -44,6 +47,7 @@ func (s *userStorage) Create(i interface{}) (string, error) {
 }
 
 func (s *userStorage) Delete(id string) error {
+	log.Printf("Deleting: %s", id)
 
 	s.mu.Lock()
 	delete(s.data, id)
