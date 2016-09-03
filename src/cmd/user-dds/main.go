@@ -19,7 +19,7 @@ func main() {
 		data: make(map[string]microblag.User),
 	}
 
-	if err := nats.Listen(ctx, microblag.UserFactory, storage, "users"); err != nil {
+	if err := dnats.Listen(ctx, microblag.UserFactory, storage); err != nil {
 		fmt.Printf("Err: %v\n", err)
 		return
 	}

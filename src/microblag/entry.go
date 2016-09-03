@@ -6,7 +6,7 @@ import (
 )
 
 // EntryFactory is a factory for distributed data model binding
-var EntryFactory = dds.NewModel(func() interface{} { return &Entry{} })
+var EntryFactory = dds.NewModel("microblag-entry", func() interface{} { return &Entry{} })
 
 // An Entry is a string published by a user
 type Entry struct {

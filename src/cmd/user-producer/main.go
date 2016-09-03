@@ -14,7 +14,7 @@ func main() {
 	user.Username = "X"
 	user.Created = time.Now()
 
-	client := dnats.Client(microblag.UserFactory, "users")
+	client := dnats.Client(microblag.UserFactory)
 	defer client.Close()
 
 	id, err := client.Create(user)

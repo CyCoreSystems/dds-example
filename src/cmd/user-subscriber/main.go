@@ -2,15 +2,14 @@ package main
 
 import (
 	"dds"
+	"dds/nats"
 	"fmt"
 	"microblag"
-
-	dnats "dds/nats"
 )
 
 func main() {
 
-	client := dnats.Client(microblag.UserFactory, "users")
+	client := dnats.Client(microblag.UserFactory)
 	defer client.Close()
 
 	s1 := client.Subscribe(dds.CreateEvent)
@@ -22,9 +21,9 @@ func main() {
 	for {
 		select {
 		case buf := <-s1.C():
-			fmt.Printf("got event: %v\n", buf)
+			fmt.Printf("got create event: %v\n", buf)
 		case buf := <-s2.C():
-			fmt.Printf("got event: %v\n", buf)
+			fmt.Printf("got all event: %v\n", buf)
 		}
 	}
 
