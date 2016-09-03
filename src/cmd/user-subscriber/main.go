@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dds"
 	"fmt"
 	"microblag"
 
@@ -12,17 +13,18 @@ func main() {
 	client := dnats.Client(microblag.UserFactory, "users")
 	defer client.Close()
 
-	data := make(chan string)
-	closer := client.Subscribe("create", data)
-	defer closer()
+	s1 := client.Subscribe(dds.CreateEvent)
+	defer s1.Close()
 
-	closer2 := client.Subscribe("*", data)
-	defer closer2()
+	s2 := client.Subscribe(dds.AllEvents)
+	defer s2.Close()
 
 	for {
 		select {
-		case buf := <-data:
-			fmt.Printf("got event: %s\n", buf)
+		case buf := <-s1.C():
+			fmt.Printf("got event: %v\n", buf)
+		case buf := <-s2.C():
+			fmt.Printf("got event: %v\n", buf)
 		}
 	}
 

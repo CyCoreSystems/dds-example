@@ -16,8 +16,14 @@ type Model interface {
 	Delete(ID string) error
 
 	// Subscribe subscribes to the event
-	Subscribe(evt string, ch chan string) func()
+	Subscribe(evt string) Subscription
 
 	// Close closes the model connection
+	Close()
+}
+
+// A Subscription is a subscription to a series of events
+type Subscription interface {
+	C() <-chan Event
 	Close()
 }

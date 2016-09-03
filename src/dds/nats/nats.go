@@ -311,12 +311,40 @@ func (m *natsModel) Update(ID string, i interface{}) error {
 	}
 }
 
-func (m *natsModel) Subscribe(evt string, out chan string) func() {
-	sx, _ := m.c.Subscribe("events."+m.entityName+"."+evt, func(_ string, _ string, data []byte) {
-		out <- string(data)
+func (m *natsModel) Subscribe(evt string) dds.Subscription {
+	var nc natsSubscription
+	nc.c = make(chan dds.Event, 10)
+	sx, _ := m.c.Subscribe("events."+m.entityName+"."+evt, func(subj string, _ string, data []byte) {
+
+		items := strings.Split(subj, ".")
+
+		nc.c <- dds.Event{
+			Entity: m.entityName,
+			Type:   items[2],
+			Metadata: map[string]interface{}{
+				"data": string(data),
+			},
+		}
 	})
 
-	return func() {
-		sx.Unsubscribe()
+	nc.sx = sx
+
+	return &nc
+}
+
+type natsSubscription struct {
+	c  chan dds.Event
+	sx *nats.Subscription
+}
+
+func (nc *natsSubscription) C() <-chan dds.Event {
+	return nc.c
+}
+
+func (nc *natsSubscription) Close() {
+	nc.sx.Unsubscribe()
+	if nc.c != nil {
+		close(nc.c)
 	}
+	nc.c = nil
 }
