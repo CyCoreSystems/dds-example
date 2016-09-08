@@ -17,6 +17,16 @@ func main() {
 	client := dnats.Client(microblag.UserFactory)
 	defer client.Close()
 
+	search := dnats.ActionClient(microblag.Search)
+
+	resp, err := search(&microblag.SearchRequest{})
+	if err != nil {
+		fmt.Printf("Error searching: %s\n", err)
+		return
+	}
+
+	fmt.Printf("search resp: %v\n", resp)
+
 	id, err := client.Create(user)
 	if err != nil {
 		fmt.Printf("Error creating user: %s\n", err)
