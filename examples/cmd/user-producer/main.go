@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"microblag"
 	"time"
 
-	dnats "dds/nats"
+	"github.com/CyCoreSystems/dds/examples/microblag"
+	"github.com/CyCoreSystems/dds/support/natsSupport"
 )
 
 func main() {
@@ -14,10 +14,10 @@ func main() {
 	user.Username = "X"
 	user.Created = time.Now()
 
-	client := dnats.Client(microblag.UserFactory)
+	client := natsSupport.Client(microblag.UserFactory)
 	defer client.Close()
 
-	search := dnats.ActionClient(microblag.Search)
+	search := natsSupport.ActionClient(microblag.Search)
 
 	resp, err := search(&microblag.SearchRequest{})
 	if err != nil {

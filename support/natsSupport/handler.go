@@ -1,7 +1,6 @@
-package dnats
+package natsSupport
 
 import (
-	"dds"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,6 +8,7 @@ import (
 
 	"golang.org/x/net/context"
 
+	"github.com/CyCoreSystems/dds"
 	"github.com/nats-io/nats"
 	uuid "github.com/satori/go.uuid"
 )

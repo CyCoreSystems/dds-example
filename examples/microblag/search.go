@@ -1,8 +1,9 @@
 package microblag
 
 import (
-	"dds"
 	"time"
+
+	"github.com/CyCoreSystems/dds"
 )
 
 // Search is the distributed action for searching

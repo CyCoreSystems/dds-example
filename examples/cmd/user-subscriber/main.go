@@ -1,15 +1,16 @@
 package main
 
 import (
-	"dds"
-	"dds/nats"
 	"fmt"
-	"microblag"
+
+	"github.com/CyCoreSystems/dds"
+	"github.com/CyCoreSystems/dds/examples/microblag"
+	"github.com/CyCoreSystems/dds/support/natsSupport"
 )
 
 func main() {
 
-	client := dnats.Client(microblag.UserFactory)
+	client := natsSupport.Client(microblag.UserFactory)
 	defer client.Close()
 
 	s1 := client.Subscribe(dds.CreateEvent)

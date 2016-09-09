@@ -1,4 +1,4 @@
-package dnats
+package natsSupport
 
 // util container
 type container struct {

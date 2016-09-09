@@ -1,15 +1,16 @@
-package dnats
+package natsSupport
 
 import (
-	"dds"
 	"errors"
 	"fmt"
 	"reflect"
 	"strings"
 	"time"
 
+	uuid "src/github.com/satori/go.uuid"
+
+	"github.com/CyCoreSystems/dds"
 	"github.com/nats-io/nats"
-	"github.com/satori/go.uuid"
 )
 
 // Client creates a client

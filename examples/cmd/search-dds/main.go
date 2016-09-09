@@ -1,16 +1,17 @@
 package main
 
 import (
-	"dds/nats"
 	"fmt"
-	"microblag"
+
+	"github.com/CyCoreSystems/dds/examples/microblag"
+	"github.com/CyCoreSystems/dds/support/natsSupport"
 
 	"golang.org/x/net/context"
 )
 
 type searchHandler int
 
-func (_ searchHandler) Handle(request interface{}) (response interface{}, err error) {
+func (sh searchHandler) Handle(request interface{}) (response interface{}, err error) {
 	s := request.(*microblag.SearchRequest)
 	fmt.Printf("got search: %v", s)
 
@@ -21,7 +22,7 @@ func main() {
 
 	ctx := context.Background()
 
-	if err := dnats.ListenHandler(ctx, microblag.Search, searchHandler(0)); err != nil {
+	if err := natsSupport.ListenHandler(ctx, microblag.Search, searchHandler(0)); err != nil {
 		fmt.Printf("Err: %v\n", err)
 		return
 	}

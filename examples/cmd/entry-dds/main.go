@@ -1,9 +1,10 @@
 package main
 
 import (
-	"dds/nats"
 	"fmt"
-	"microblag"
+
+	"github.com/CyCoreSystems/dds/examples/microblag"
+	"github.com/CyCoreSystems/dds/support/natsSupport"
 
 	"golang.org/x/net/context"
 )
@@ -16,7 +17,7 @@ func main() {
 		data: make(map[string]microblag.Entry),
 	}
 
-	if err := dnats.Listen(ctx, microblag.EntryFactory, storage); err != nil {
+	if err := natsSupport.Listen(ctx, microblag.EntryFactory, storage); err != nil {
 		fmt.Printf("Err: %v\n", err)
 		return
 	}

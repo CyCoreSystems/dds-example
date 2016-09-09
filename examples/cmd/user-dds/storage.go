@@ -3,10 +3,10 @@ package main
 import (
 	"errors"
 	"log"
-	"microblag"
 	"reflect"
 	"sync"
 
+	"github.com/CyCoreSystems/dds/examples/microblag"
 	"github.com/satori/go.uuid"
 )
 

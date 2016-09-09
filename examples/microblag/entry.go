@@ -1,8 +1,9 @@
 package microblag
 
 import (
-	"dds"
 	"time"
+
+	"github.com/CyCoreSystems/dds"
 )
 
 // EntryFactory is a factory for distributed data model binding

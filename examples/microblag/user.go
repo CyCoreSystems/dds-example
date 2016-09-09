@@ -1,9 +1,10 @@
 package microblag
 
 import (
-	"dds"
 	"fmt"
 	"time"
+
+	"github.com/CyCoreSystems/dds"
 )
 
 // UserFactory is a factory for distributed data model binding

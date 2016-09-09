@@ -1,3 +1,3 @@
-# dds-example
+# dds
 
-distributed data services example via nats/golang
+distributed data services

@@ -1,10 +1,10 @@
-package dnats
+package natsSupport
 
 import (
-	"dds"
 	"encoding/json"
 	"errors"
 
+	"github.com/CyCoreSystems/dds"
 	"github.com/nats-io/nats"
 	"github.com/nats-io/nats/encoders/builtin"
 )

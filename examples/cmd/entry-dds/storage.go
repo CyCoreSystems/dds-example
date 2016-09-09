@@ -2,9 +2,9 @@ package main
 
 import (
 	"errors"
-	"microblag"
 	"sync"
 
+	"github.com/CyCoreSystems/dds/examples/microblag"
 	"github.com/satori/go.uuid"
 )
 

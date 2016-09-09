@@ -1,13 +1,13 @@
-package dnats
+package natsSupport
 
 import (
-	"dds"
 	"errors"
 	"fmt"
 	"log"
 	"strings"
 	"time"
 
+	"github.com/CyCoreSystems/dds"
 	"github.com/nats-io/nats"
 	"golang.org/x/net/context"
 )
