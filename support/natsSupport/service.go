@@ -1,6 +1,7 @@
 package natsSupport
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -17,8 +18,6 @@ func Listen(ctx context.Context, mf *dds.ModelFactory, storage dds.Storage) erro
 
 	entityName := mf.EntityName
 
-	RegisterEncoder(mf, entityName)
-
 	var nc *nats.Conn
 	var err error
 
@@ -34,14 +33,16 @@ func Listen(ctx context.Context, mf *dds.ModelFactory, storage dds.Storage) erro
 		return errors.New("Failed to connect to nats, giving up\n")
 	}
 
-	c, _ := nats.NewEncodedConn(nc, "dds."+entityName)
-
 	go func() {
 		<-ctx.Done()
-		c.Close()
+		nc.Close()
 	}()
 
-	c.Subscribe(entityName+".get.>", func(subj, reply string, data []byte) {
+	var reporter = func(err error, msg string) {
+		fmt.Printf("ERR: %s: '%v'", msg, err)
+	}
+
+	subscribe(nc, reporter, entityName+".get.>", func(subj string, request []byte, reply Reply) {
 
 		items := strings.Split(subj, ".")
 		id := items[len(items)-1]
@@ -53,62 +54,55 @@ func Listen(ctx context.Context, mf *dds.ModelFactory, storage dds.Storage) erro
 		log.Printf("Results: %v %v", object, err)
 
 		if err != nil {
-			c.Publish(reply, statusResult{"status": err.Error()})
+			reply(nil, err)
 			return
 		}
 
 		if object == nil {
-			c.Publish(reply, statusResult{"status": "NotFound"})
+			reply(nil, errors.New("Not Found"))
 			return
 		}
 
-		c.Publish(reply, object)
+		reply(object, nil)
 	})
 
-	c.Subscribe(entityName+".create", func(subj, reply string, i container) {
+	subscribe(nc, reporter, entityName+".create", func(subj string, request []byte, reply Reply) {
+		i := mf.Build()
+		id, err := storage.Create(i)
+		reply(id, err)
 
-		id, err := storage.Create(i.I)
-		if err != nil {
-			c.Publish(reply, map[string]string{
-				"status": err.Error(),
-			})
-			return
+		if err == nil {
+			publish(nc, entityName, "create", i)
 		}
-
-		c.Publish(reply, map[string]string{
-			"id": id,
-		})
-
-		c.Publish("events."+entityName+".create", i.I)
 	})
 
-	c.Subscribe(entityName+".delete.>", func(subj, reply string, data []byte) {
+	subscribe(nc, reporter, entityName+".delete.>", func(subj string, _ []byte, reply Reply) {
 
 		items := strings.Split(subj, ".")
 		id := items[len(items)-1]
 
 		err := storage.Delete(id)
-		if err != nil {
-			c.Publish(reply, map[string]string{"status": err.Error()})
-			return
+		reply(nil, err)
+
+		if err == nil {
+			publish(nc, entityName, "delete", id)
 		}
-
-		c.Publish(reply, map[string]string{"status": "OK"})
-
-		c.Publish("events."+entityName+".delete", id)
 	})
 
-	c.Subscribe(entityName+".update", func(subj, reply string, i container) {
-
-		err := storage.Update(i.I)
+	subscribe(nc, reporter, entityName+".update", func(subj string, body []byte, reply Reply) {
+		i := mf.Build()
+		err := json.Unmarshal(body, i)
 		if err != nil {
-			c.Publish(reply, statusResult{"status": err.Error()})
+			reply(nil, err)
 			return
 		}
 
-		c.Publish(reply, map[string]interface{}{"status": "OK"})
+		err = storage.Update(i)
+		reply(nil, err)
 
-		c.Publish("events."+entityName+".update", i.I)
+		if err == nil {
+			publish(nc, entityName, "update", i)
+		}
 	})
 
 	return nil
