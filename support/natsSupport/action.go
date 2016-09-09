@@ -6,36 +6,16 @@ import (
 	"fmt"
 	"time"
 
-	"golang.org/x/net/context"
-
 	"github.com/CyCoreSystems/dds"
 	"github.com/nats-io/nats"
 )
 
 // ListenHandler listens for an action handler
-func ListenHandler(ctx context.Context, af *dds.ActionFactory, handler dds.Handler) error {
+func (nt *natsTransport) Action(af *dds.ActionFactory, handler dds.Handler) error {
 
 	actionName := af.ActionName
 
-	var nc *nats.Conn
-	var err error
-
-	for i := 0; i != 3 && nc == nil; i++ {
-		<-time.After(500 * time.Millisecond)
-		nc, err = nats.Connect(nats.DefaultURL)
-		if err != nil {
-			fmt.Printf("Error connecting to nats: '%v'", err)
-		}
-	}
-
-	if nc == nil {
-		return errors.New("Failed to connect to nats, giving up\n")
-	}
-
-	go func() {
-		<-ctx.Done()
-		nc.Close()
-	}()
+	nc := nt.nc
 
 	var reporter = func(err error, msg string) {
 		fmt.Printf("ERR: %s: '%v'", msg, err)

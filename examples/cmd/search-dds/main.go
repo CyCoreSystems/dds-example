@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/CyCoreSystems/dds"
 	"github.com/CyCoreSystems/dds/examples/microblag"
 	"github.com/CyCoreSystems/dds/support/natsSupport"
 
@@ -22,9 +23,16 @@ func main() {
 
 	ctx := context.Background()
 
-	if err := natsSupport.ListenHandler(ctx, microblag.Search, searchHandler(0)); err != nil {
+	nt, err := natsSupport.NewTransport()
+	if err != nil {
 		fmt.Printf("Err: %v\n", err)
 		return
+	}
+
+	svc := dds.NewActionService(microblag.Search, searchHandler(0), nt)
+
+	if err := svc.Listen(); err != nil {
+		fmt.Printf("Err: %v\n", err)
 	}
 
 	<-ctx.Done()
