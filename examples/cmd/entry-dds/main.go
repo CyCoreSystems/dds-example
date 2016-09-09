@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/CyCoreSystems/dds"
 	"github.com/CyCoreSystems/dds/examples/microblag"
 	"github.com/CyCoreSystems/dds/support/natsSupport"
 
@@ -17,7 +18,17 @@ func main() {
 		data: make(map[string]microblag.Entry),
 	}
 
-	if err := natsSupport.Listen(ctx, microblag.EntryFactory, storage); err != nil {
+	transport, err := natsSupport.NewTransport()
+	if err != nil {
+		fmt.Printf("Err: %v\n", err)
+		return
+	}
+
+	svc := dds.NewDataService(microblag.EntryFactory, storage, transport)
+	defer svc.Stop()
+
+	err = svc.Listen()
+	if err != nil {
 		fmt.Printf("Err: %v\n", err)
 		return
 	}

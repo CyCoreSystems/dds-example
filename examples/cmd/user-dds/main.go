@@ -20,7 +20,17 @@ func main() {
 		data: make(map[string]microblag.User),
 	}
 
-	if err := natsSupport.Listen(ctx, microblag.UserFactory, storage); err != nil {
+	transport, err := natsSupport.NewTransport()
+	if err != nil {
+		fmt.Printf("Err: '%v'\n", err)
+		return
+	}
+
+	svc := dds.NewDataService(microblag.UserFactory, storage, transport)
+	defer svc.Stop()
+
+	err = svc.Listen()
+	if err != nil {
 		fmt.Printf("Err: %v\n", err)
 		return
 	}

@@ -6,41 +6,20 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
 	"github.com/CyCoreSystems/dds"
-	"github.com/nats-io/nats"
-	"golang.org/x/net/context"
 )
 
 // Listen listens on nats for requests on the queue given the entity name
-func Listen(ctx context.Context, mf *dds.ModelFactory, storage dds.Storage) error {
+func (nt *natsTransport) Model(mf *dds.ModelFactory, storage dds.Storage) error {
 
 	entityName := mf.EntityName
-
-	var nc *nats.Conn
-	var err error
-
-	for i := 0; i != 3 && nc == nil; i++ {
-		<-time.After(500 * time.Millisecond)
-		nc, err = nats.Connect(nats.DefaultURL)
-		if err != nil {
-			fmt.Printf("Error connecting to nats: '%v'", err)
-		}
-	}
-
-	if nc == nil {
-		return errors.New("Failed to connect to nats, giving up\n")
-	}
-
-	go func() {
-		<-ctx.Done()
-		nc.Close()
-	}()
 
 	var reporter = func(err error, msg string) {
 		fmt.Printf("ERR: %s: '%v'", msg, err)
 	}
+
+	nc := nt.nc
 
 	subscribe(nc, reporter, entityName+".get.>", func(subj string, request []byte, reply Reply) {
 
